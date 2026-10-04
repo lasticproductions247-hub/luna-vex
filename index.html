@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luna Vex | Model Portfolio</title>
+    <script src="https://cdn.jsdelivr.net/npm/react@18.0.0/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.0.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --accent-purple: #8b5cf6;
+            --accent-cyan: #06d6a0;
+            --accent-pink: #ec4899;
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .font-heading {
+            font-family: 'Bebas Neue', sans-serif;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--accent-purple), var(--accent-cyan));
+            border-radius: 4px;
+        }
+
+        /* Animated gradient background */
+        .gradient-bg {
+            background: linear-gradient(-45deg, #0a0a0f, #1a1a2e, #16213e, #0f3460);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Glow effects */
+        .glow-purple {
+            box-shadow: 0 0 60px rgba(139, 92, 246, 0.3), 0 0 100px rgba(139, 92, 246, 0.1);
+        }
+
+        .glow-cyan {
+            box-shadow: 0 0 60px rgba(6, 214, 160, 0.3), 0 0 100px rgba(6, 214, 160, 0.1);
+        }
+
+        /* Image hover effects */
+        .portfolio-item {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .portfolio-item img {
+            transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.5s ease;
+        }
+
+        .portfolio-item:hover img {
+            transform: scale(1.08);
+            filter: brightness(1.1);
+        }
+
+        .portfolio-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(10, 10, 15, 0.95) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            display: flex;
+            align-items: flex-end;
+            padding: 2rem;
+        }
+
+        .portfolio-item:hover .portfolio-overlay {
+            opacity: 1;
+        }
+
+        /* Floating particles */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Text reveal animation */
+        .reveal-text {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .reveal-text.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Stagger children */
+        .stagger-children > * {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .stagger-children.visible > *:nth-child(1) { transition-delay: 0.1s; opacity: 1; transform: translateY(0); }
+        .stagger-children.visible > *:nth-child(2) { transition-delay: 0.2s; opacity: 1; transform: translateY(0); }
+        .stagger-children.visible > *:nth-child(3) { transition-delay: 0.3s; opacity: 1; transform: translateY(0); }
+        .stagger-children.visible > *:nth-child(4) { transition-delay: 0.4s; opacity: 1; transform: translateY(0); }
+        .stagger-children.visible > *:nth-child(5) { transition-delay: 0.5s; opacity: 1; transform: translateY(0); }
+        .stagger-children.visible > *:nth-child(6) { transition-delay: 0.6s; opacity: 1; transform: translateY(0); }
+
+        /* Button styles */
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Navigation */
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan));
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Stats counter animation */
+        .stat-number {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Modal styles */
+        .modal-backdrop {
+            backdrop-filter: blur(10px);
+            background: rgba(10, 10, 15, 0.9);
+        }
+
+        /* Category filter buttons */
+        .filter-btn {
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            border-color: transparent;
+        }
+
+        .filter-btn:not(.active):hover {
+            border-color: var(--accent-purple);
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        /* Hero parallax effect */
+        .hero-image-container {
+            perspective: 1000px;
+        }
+
+        .hero-image {
+            transition: transform 0.1s ease-out;
+        }
+
+        /* Line decoration */
+        .line-decoration {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan));
+        }
+
+        /* Social icons hover */
+        .social-icon {
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            color: var(--accent-cyan);
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // Portfolio data
+        const portfolioItems = [
+            {
+                id: 1,
+                title: "Mystic Vision",
+                category: "editorial",
+                image: "https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=800&q=80",
+                description: "Avant-garde editorial with mystical makeup artistry"
+            },
+            {
+                id: 2,
+                title: "Natural Beauty",
+                category: "lifestyle",
+                image: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=800&q=80",
+                description: "Fresh and vibrant lifestyle photography"
+            },
+            {
+                id: 3,
+                title: "Urban Edge",
+                category: "fashion",
+                image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80",
+                description: "Street fashion editorial"
+            },
+            {
+                id: 4,
+                title: "Ethereal Dreams",
+                category: "editorial",
+                image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=800&q=80",
+                description: "Dreamy conceptual photography"
+            },
+            {
+                id: 5,
+                title: "Bold Statement",
+                category: "fashion",
+                image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&q=80",
+                description: "High fashion beauty shoot"
+            },
+            {
+                id: 6,
+                title: "Golden Hour",
+                category: "lifestyle",
+                image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&q=80",
+                description: "Natural light portrait session"
+            }
+        ];
+
+        const stats = [
+            { number: 150, label: "Photoshoots", suffix: "+" },
+            { number: 50, label: "Brands", suffix: "+" },
+            { number: 8, label: "Years Experience", suffix: "" },
+            { number: 12, label: "Magazine Features", suffix: "" }
+        ];
+
+        // Particle component
+        const Particles = () => {
+            const particles = Array.from({ length: 20 }, (_, i) => ({
+                id: i,
+                left: Math.random() * 100,
+                delay: Math.random() * 20,
+                duration: 15 + Math.random() * 10,
+                color: i % 3 === 0 ? '#8b5cf6' : i % 3 === 1 ? '#06d6a0' : '#ec4899',
+                size: 2 + Math.random() * 4
+            }));
+
+            return (
+                <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+                    {particles.map(p => (
+                        <div
+                            key={p.id}
+                            className="particle"
+                            style={{
+                                left: `${p.left}%`,
+                                animationDelay: `${p.delay}s`,
+                                animationDuration: `${p.duration}s`,
+                                backgroundColor: p.color,
+                                width: `${p.size}px`,
+                                height: `${p.size}px`
+                            }}
+                        />
+                    ))}
+                </div>
+            );
+        };
+
+        // Navigation component
+        const Navigation = ({ scrolled }) => {
+            const [mobileOpen, setMobileOpen] = useState(false);
+
+            return (
+                <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+                    scrolled ? 'bg-[#0a0a0f]/95 backdrop-blur-lg shadow-2xl' : 'bg-transparent'
+                }`}>
+                    <div className="max-w-7xl mx-auto px-6 py-4">
+                        <div className="flex items-center justify-between">
+                            <a href="#" className="font-heading text-3xl tracking-wider">
+                                <span className="text-white">LUNA</span>
+                                <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent"> VEX</span>
+                            </a>
+
+                            {/* Desktop nav */}
+                            <div className="hidden md:flex items-center gap-8">
+                                <a href="#home" className="nav-link text-sm tracking-wide text-gray-300 hover:text-white">Home</a>
+                                <a href="#about" className="nav-link text-sm tracking-wide text-gray-300 hover:text-white">About</a>
+                                <a href="#portfolio" className="nav-link text-sm tracking-wide text-gray-300 hover:text-white">Portfolio</a>
+                                <a href="#contact" className="btn-primary px-6 py-2.5 rounded-full text-sm font-medium">
+                                    Book Me
+                                </a>
+                            </div>
+
+                            {/* Mobile menu button */}
+                            <button
+                                className="md:hidden text-white"
+                                onClick={() => setMobileOpen(!mobileOpen)}
+                            >
+                                <i className={`fas ${mobileOpen ? 'fa-times' : 'fa-bars'} text-xl`}></i>
+                            </button>
+                        </div>
+
+                        {/* Mobile menu */}
+                        {mobileOpen && (
+                            <div className="md:hidden mt-4 pb-4 border-t border-white/10 pt-4 stagger-children visible">
+                                <a href="#home" className="block py-3 text-gray-300 hover:text-white">Home</a>
+                                <a href="#about" className="block py-3 text-gray-300 hover:text-white">About</a>
+                                <a href="#portfolio" className="block py-3 text-gray-300 hover:text-white">Portfolio</a>
+                                <a href="#contact" className="block btn-primary px-6 py-2.5 rounded-full text-sm font-medium text-center mt-4">
+                                    Book Me
+                                </a>
+                            </div>
+                        )}
+                    </div>
+                </nav>
+            );
+        };
+
+        // Hero section
+        const HeroSection = () => {
+            const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+            const heroRef = useRef(null);
+
+            useEffect(() => {
+                const handleMouseMove = (e) => {
+                    if (heroRef.current) {
+                        const rect = heroRef.current.getBoundingClientRect();
+                        setMousePos({
+                            x: (e.clientX - rect.left - rect.width / 2) / 30,
+                            y: (e.clientY - rect.top - rect.height / 2) / 30
+                        });
+                    }
+                };
+
+                window.addEventListener('mousemove', handleMouseMove);
+                return () => window.removeEventListener('mousemove', handleMouseMove);
+            }, []);
+
+            return (
+                <section id="home" className="min-h-screen relative flex items-center pt-20">
+                    <div ref={heroRef} className="max-w-7xl mx-auto px-6 w-full">
+                        <div className="grid lg:grid-cols-2 gap-12 items-center">
+                            {/* Text content */}
+                            <div className="order-2 lg:order-1 space-y-8 reveal-text">
+                                <div className="space-y-2">
+                                    <p className="text-sm tracking-[0.3em] uppercase text-cyan-400 font-medium">Professional Model</p>
+                                    <h1 className="font-display text-6xl md:text-7xl lg:text-8xl leading-none">
+                                        <span className="block">Creative</span>
+                                        <span className="block bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
+                                            Visionary
+                                        </span>
+                                    </h1>
+                                </div>
+
+                                <div className="line-decoration"></div>
+
+                                <p className="text-gray-400 text-lg max-w-md leading-relaxed">
+                                    Bringing characters to life through expressive modeling. Specializing in editorial, fashion, and avant-garde photography.
+                                </p>
+
+                                <div className="flex flex-wrap gap-4 pt-4">
+                                    <a href="#portfolio" className="btn-primary px-8 py-4 rounded-full font-medium inline-flex items-center gap-2">
+                                        View Portfolio
+                                        <i className="fas fa-arrow-right"></i>
+                                    </a>
+                                    <a href="#contact" className="px-8 py-4 rounded-full font-medium border border-white/20 hover:border-purple-400 hover:bg-purple-400/10 transition-all inline-flex items-center gap-2">
+                                        Get in Touch
+                                    </a>
+                                </div>
+
+                                {/* Social links */}
+                                <div className="flex gap-6 pt-6">
+                                    <a href="#" className="social-icon text-gray-400"><i className="fab fa-instagram text-xl"></i></a>
+                                    <a href="#" className="social-icon text-gray-400"><i className="fab fa-tiktok text-xl"></i></a>
+                                    <a href="#" className="social-icon text-gray-400"><i className="fab fa-behance text-xl"></i></a>
+                                    <a href="#" className="social-icon text-gray-400"><i className="fas fa-envelope text-xl"></i></a>
+                                </div>
+                            </div>
+
+                            {/* Hero image */}
+                            <div className="order-1 lg:order-2 hero-image-container relative">
+                                <div
+                                    className="hero-image relative"
+                                    style={{ transform: `rotateY(${mousePos.x}deg) rotateX(${-mousePos.y}deg)` }}
+                                >
+                                    <div className="relative">
+                                        <img
+                                            src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=800&q=80"
+                                            alt="Luna Vex - Model Portfolio"
+                                            className="rounded-3xl glow-purple w-full max-w-lg mx-auto object-cover aspect-[3/4]"
+                                        />
+
+                                        {/* Decorative elements */}
+                                        <div className="absolute -top-4 -right-4 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl"></div>
+                                        <div className="absolute -bottom-4 -left-4 w-40 h-40 bg-cyan-500/20 rounded-full blur-3xl"></div>
+
+                                        {/* Floating badge */}
+                                        <div className="absolute bottom-8 left-8 bg-black/60 backdrop-blur-md rounded-2xl p-4 border border-white/10">
+                                            <p className="text-xs text-gray-400 uppercase tracking-wider">Available for</p>
+                                            <p className="text-white font-semibold">Bookings Now</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Scroll indicator */}
+                    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+                        <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-2">
+                            <div className="w-1.5 h-3 bg-white/60 rounded-full animate-pulse"></div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // About section
+        const AboutSection = () => {
+            return (
+                <section id="about" className="py-32 relative">
+                    <div className="max-w-7xl mx-auto px-6">
+                        <div className="grid lg:grid-cols-2 gap-16 items-center">
+                            {/* Image grid */}
+                            <div className="grid grid-cols-2 gap-4 reveal-text">
+                                <div className="space-y-4">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1541101767792-f9b2b1c4f127?w=600&q=80"
+                                        alt="Model portrait"
+                                        className="rounded-2xl w-full object-cover aspect-[3/4] glow-cyan"
+                                    />
+                                </div>
+                                <div className="space-y-4 pt-8">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&q=80"
+                                        alt="Fashion shoot"
+                                        className="rounded-2xl w-full object-cover aspect-square"
+                                    />
+                                    <div className="bg-gradient-to-br from-purple-500/20 to-cyan-500/20 rounded-2xl p-6 border border-white/10">
+                                        <p className="text-4xl font-bold stat-number">8+</p>
+                                        <p className="text-sm text-gray-400">Years of Experience</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Content */}
+                            <div className="space-y-8 reveal-text">
+                                <div>
+                                    <p className="text-sm tracking-[0.3em] uppercase text-purple-400 mb-4">About Me</p>
+                                    <h2 className="font-display text-5xl leading-tight">
+                                        Versatility is my<br/>
+                                        <span className="italic text-gray-400">superpower</span>
+                                    </h2>
+                                </div>
+
+                                <div className="line-decoration"></div>
+
+                                <div className="space-y-4 text-gray-400 leading-relaxed">
+                                    <p>
+                                        With over 8 years of experience in the modeling industry, I've had the privilege of working with renowned photographers, brands, and publications worldwide.
+                                    </p>
+                                    <p>
+                                        My passion lies in transformation – from ethereal editorial looks to relatable lifestyle imagery. I believe every photoshoot tells a story, and I'm here to bring that story to life.
+                                    </p>
+                                </div>
+
+                                {/* Skills tags */}
+                                <div className="flex flex-wrap gap-3 pt-4">
+                                    {['Editorial', 'Fashion', 'Commercial', 'Beauty', 'Lifestyle', 'Avant-Garde'].map(skill => (
+                                        <span key={skill} className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm hover:border-purple-400 hover:bg-purple-400/10 transition-all cursor-default">
+                                            {skill}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // Stats section
+        const StatsSection = () => {
+            const [counts, setCounts] = useState(stats.map(() => 0));
+            const statsRef = useRef(null);
+            const [hasAnimated, setHasAnimated] = useState(false);
+
+            useEffect(() => {
+                const observer = new IntersectionObserver((entries) => {
+                    if (entries[0].isIntersecting && !hasAnimated) {
+                        setHasAnimated(true);
+                        stats.forEach((stat, index) => {
+                            let start = 0;
+                            const end = stat.number;
+                            const duration = 2000;
+                            const increment = end / (duration / 16);
+
+                            const timer = setInterval(() => {
+                                start += increment;
+                                if (start >= end) {
+                                    start = end;
+                                    clearInterval(timer);
+                                }
+                                setCounts(prev => {
+                                    const newCounts = [...prev];
+                                    newCounts[index] = Math.floor(start);
+                                    return newCounts;
+                                });
+                            }, 16);
+                        });
+                    }
+                }, { threshold: 0.5 });
+
+                if (statsRef.current) observer.observe(statsRef.current);
+                return () => observer.disconnect();
+            }, [hasAnimated]);
+
+            return (
+                <section ref={statsRef} className="py-20 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 via-transparent to-cyan-900/20"></div>
+
+                    <div className="max-w-6xl mx-auto px-6 relative">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 stagger-children">
+                            {stats.map((stat, index) => (
+                                <div key={index} className="text-center">
+                                    <p className="text-5xl md:text-6xl font-bold stat-number font-heading">
+                                        {counts[index]}{stat.suffix}
+                                    </p>
+                                    <p className="text-gray-400 mt-2 text-sm tracking-wide">{stat.label}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // Portfolio section
+        const PortfolioSection = () => {
+            const [activeFilter, setActiveFilter] = useState('all');
+            const [selectedImage, setSelectedImage] = useState(null);
+
+            const categories = ['all', 'editorial', 'fashion', 'lifestyle'];
+
+            const filteredItems = activeFilter === 'all'
+                ? portfolioItems
+                : portfolioItems.filter(item => item.category === activeFilter);
+
+            return (
+                <section id="portfolio" className="py-32 relative">
+                    <div className="max-w-7xl mx-auto px-6">
+                        {/* Header */}
+                        <div className="text-center mb-16 reveal-text">
+                            <p className="text-sm tracking-[0.3em] uppercase text-cyan-400 mb-4">My Work</p>
+                            <h2 className="font-display text-5xl md:text-6xl mb-6">Portfolio</h2>
+                            <div className="line-decoration mx-auto"></div>
+                        </div>
+
+                        {/* Filter buttons */}
+                        <div className="flex justify-center gap-4 mb-12 flex-wrap reveal-text">
+                            {categories.map(cat => (
+                                <button
+                                    key={cat}
+                                    onClick={() => setActiveFilter(cat)}
+                                    className={`filter-btn px-6 py-2.5 rounded-full text-sm capitalize transition-all ${
+                                        activeFilter === cat ? 'active' : 'bg-white/5 text-gray-400'
+                                    }`}
+                                >
+                                    {cat}
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Portfolio grid */}
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 stagger-children">
+                            {filteredItems.map(item => (
+                                <div
+                                    key={item.id}
+                                    className="portfolio-item rounded-2xl aspect-[3/4]"
+                                    onClick={() => setSelectedImage(item)}
+                                >
+                                    <img
+                                        src={item.image}
+                                        alt={item.title}
+                                        className="w-full h-full object-cover rounded-2xl"
+                                    />
+                                    <div className="portfolio-overlay rounded-2xl">
+                                        <div>
+                                            <p className="text-xs uppercase tracking-wider text-cyan-400 mb-1">{item.category}</p>
+                                            <h3 className="font-display text-2xl mb-2">{item.title}</h3>
+                                            <p className="text-gray-400 text-sm">{item.description}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Lightbox modal */}
+                    {selectedImage && (
+                        <div
+                            className="fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4"
+                            onClick={() => setSelectedImage(null)}
+                        >
+                            <div className="relative max-w-4xl w-full" onClick={e => e.stopPropagation()}>
+                                <button
+                                    onClick={() => setSelectedImage(null)}
+                                    className="absolute -top-12 right-0 text-white hover:text-purple-400 transition-colors"
+                                >
+                                    <i className="fas fa-times text-2xl"></i>
+                                </button>
+                                <img
+                                    src={selectedImage.image}
+                                    alt={selectedImage.title}
+                                    className="w-full rounded-2xl"
+                                />
+                                <div className="mt-4 text-center">
+                                    <h3 className="font-display text-2xl">{selectedImage.title}</h3>
+                                    <p className="text-gray-400 mt-2">{selectedImage.description}</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </section>
+            );
+        };
+
+        // Contact section
+        const ContactSection = () => {
+            const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+            const [submitted, setSubmitted] = useState(false);
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                setSubmitted(true);
+                setTimeout(() => setSubmitted(false), 3000);
+                setFormData({ name: '', email: '', message: '' });
+            };
+
+            return (
+                <section id="contact" className="py-32 relative">
+                    <div className="absolute inset-0 bg-gradient-to-t from-purple-900/10 via-transparent to-transparent"></div>
+
+                    <div className="max-w-4xl mx-auto px-6 relative">
+                        <div className="text-center mb-16 reveal-text">
+                            <p className="text-sm tracking-[0.3em] uppercase text-pink-400 mb-4">Get in Touch</p>
+                            <h2 className="font-display text-5xl md:text-6xl mb-6">Let's Create Together</h2>
+                            <div className="line-decoration mx-auto"></div>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-12">
+                            {/* Contact info */}
+                            <div className="space-y-8 reveal-text">
+                                <div>
+                                    <h3 className="font-semibold text-xl mb-4">Contact Information</h3>
+                                    <p className="text-gray-400 leading-relaxed">
+                                        Ready to bring your creative vision to life? Let's discuss your next project.
+                                    </p>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center">
+                                            <i className="fas fa-envelope text-purple-400"></i>
+                                        </div>
+                                        <div>
+                                            <p className="text-sm text-gray-400">Email</p>
+                                            <p>booking@lunavex.com</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center">
+                                            <i className="fas fa-map-marker-alt text-cyan-400"></i>
+                                        </div>
+                                        <div>
+                                            <p className="text-sm text-gray-400">Location</p>
+                                            <p>Johannesburg, South Africa</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-full bg-pink-500/20 flex items-center justify-center">
+                                            <i className="fas fa-clock text-pink-400"></i>
+                                        </div>
+                                        <div>
+                                            <p className="text-sm text-gray-400">Response Time</p>
+                                            <p>Within 24 hours</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-4 pt-4">
+                                    <a href="#" className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:border-purple-400 hover:bg-purple-400/10 transition-all social-icon">
+                                        <i className="fab fa-instagram"></i>
+                                    </a>
+                                    <a href="#" className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:border-cyan-400 hover:bg-cyan-400/10 transition-all social-icon">
+                                        <i className="fab fa-tiktok"></i>
+                                    </a>
+                                    <a href="#" className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:border-pink-400 hover:bg-pink-400/10 transition-all social-icon">
+                                        <i className="fab fa-behance"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            {/* Contact form */}
+                            <form onSubmit={handleSubmit} className="space-y-6 reveal-text">
+                                <div>
+                                    <label className="block text-sm text-gray-400 mb-2">Name</label>
+                                    <input
+                                        type="text"
+                                        value={formData.name}
+                                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                        required
+                                        className="w-full px-5 py-4 rounded-xl bg-white/5 border border-white/10 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all"
+                                        placeholder="Your name"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm text-gray-400 mb-2">Email</label>
+                                    <input
+                                        type="email"
+                                        value={formData.email}
+                                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                                        required
+                                        className="w-full px-5 py-4 rounded-xl bg-white/5 border border-white/10 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all"
+                                        placeholder="your@email.com"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm text-gray-400 mb-2">Message</label>
+                                    <textarea
+                                        value={formData.message}
+                                        onChange={(e) => setFormData({...formData, message: e.target.value})}
+                                        required
+                                        rows="4"
+                                        className="w-full px-5 py-4 rounded-xl bg-white/5 border border-white/10 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400/20 transition-all resize-none"
+                                        placeholder="Tell me about your project..."
+                                    ></textarea>
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    className="btn-primary w-full py-4 rounded-xl font-medium flex items-center justify-center gap-2"
+                                >
+                                    {submitted ? (
+                                        <>
+                                            <i className="fas fa-check"></i>
+                                            Message Sent!
+                                        </>
+                                    ) : (
+                                        <>
+                                            Send Message
+                                            <i className="fas fa-paper-plane"></i>
+                                        </>
+                                    )}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // Footer
+        const Footer = () => {
+            return (
+                <footer className="py-12 border-t border-white/5">
+                    <div className="max-w-7xl mx-auto px-6">
+                        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div className="font-heading text-2xl tracking-wider">
+                                <span className="text-white">LUNA</span>
+                                <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent"> VEX</span>
+                            </div>
+
+                            <div className="flex gap-8 text-sm text-gray-400">
+                                <a href="#home" className="hover:text-white transition-colors">Home</a>
+                                <a href="#about" className="hover:text-white transition-colors">About</a>
+                                <a href="#portfolio" className="hover:text-white transition-colors">Portfolio</a>
+                                <a href="#contact" className="hover:text-white transition-colors">Contact</a>
+                            </div>
+
+                            <p className="text-sm text-gray-500">
+                                © 2024 Luna Vex. All rights reserved.
+                            </p>
+                        </div>
+                    </div>
+                </footer>
+            );
+        };
+
+        // Main App
+        const App = () => {
+            const [scrolled, setScrolled] = useState(false);
+
+            useEffect(() => {
+                const handleScroll = () => {
+                    setScrolled(window.scrollY > 50);
+                };
+
+                window.addEventListener('scroll', handleScroll);
+
+                // Reveal animations
+                const observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                        }
+                    });
+                }, observerOptions);
+
+                document.querySelectorAll('.reveal-text, .stagger-children').forEach(el => {
+                    observer.observe(el);
+                });
+
+                return () => {
+                    window.removeEventListener('scroll', handleScroll);
+                    observer.disconnect();
+                };
+            }, []);
+
+            return (
+                <div className="gradient-bg min-h-screen relative">
+                    <Particles />
+                    <Navigation scrolled={scrolled} />
+                    <HeroSection />
+                    <AboutSection />
+                    <StatsSection />
+                    <PortfolioSection />
+                    <ContactSection />
+                    <Footer />
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
